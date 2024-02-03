@@ -1,0 +1,126 @@
+{
+  "topicFilter": "esp32/pub",
+  "qos": 0,
+  "messages": [
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259512188,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "0"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259511246,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "64"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259510186,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "192"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259509299,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "0"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259508276,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "0"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259507277,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "152"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259506241,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "352"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259505173,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "192"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259504281,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "1032"
+        }
+      },
+      "qos": 0
+    },
+    {
+      "format": "json",
+      "topic": "esp32/pub",
+      "timestamp": 1697259503170,
+      "payload": {
+        "Liter/hour": {
+          "isLosslessNumber": true,
+          "value": "32"
+        }
+      },
+      "qos": 0
+    }
+  ]
+}
