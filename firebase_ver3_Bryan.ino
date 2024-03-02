@@ -9,13 +9,16 @@
 #include "addons/TokenHelper.h"
 // Provide the RTDB payload printing info and other helper functions.
 #include "addons/RTDBHelper.h"
+#include <esp_task_wdt.h>
+
+
 #define WIFI_SSID "Happy Illini"                                              // change
 #define WIFI_PASSWORD "00000007"                                         //change
 #define DATABASE_URL "https://hydrobryan-608df-default-rtdb.firebaseio.com/"                                          //change
 #define API_KEY "AIzaSyBAHEZcJ8F1WiusYmaw_8rZD2exXFwVW2I"                                              // change
 #define USER_EMAIL "bryanchang1234@gmail.com"                                            // change
 #define USER_PASSWORD "@B29908719b"                                         //change
-
+#define WDT_TIMEOUT 30
 
 FirebaseData fbdo; // object for authentification
 FirebaseAuth auth;
@@ -32,14 +35,16 @@ String parentPath; // parent node that is updated in every loop with timestamp
 *|-databasePath-----|
 *UserData/<user_uid*>/timestamp/litPerMin
 */
-#define BUFFER_SIZE 25
+//cannot be set above 512 
+#define BUFFER_SIZE 400
+
 int timestamp[BUFFER_SIZE];
 FirebaseJson json;
 
 const char* ntpServer = "pool.ntp.org";
 // Timer variables (send new readings every three minutes)
 unsigned long sendDataPrevMillis = 0;
-unsigned long timerDelay = 1000;    // every 180000ms = 180s = 3min
+unsigned long timerDelay = 100;    // every 180000ms = 180s = 3min
 //time after there is no water flow to put the device into sleep
 #define idle_time 6
 int sleepCount = 0;
@@ -62,11 +67,14 @@ void Firebase_init() {
   auth.user.password = USER_PASSWORD;
   config.database_url = DATABASE_URL;
   Firebase.reconnectWiFi(true);
-  fbdo.setResponseSize(4096);
+  
+  fbdo.setResponseSize(8192);
+  fbdo.setBSSLBufferSize(4096 /* Rx buffer size in bytes from 512 - 16384 */, 8192 /* Tx buffer size in bytes from 512 - 16384 */);
   config.token_status_callback = tokenStatusCallback; // see addonsTokenHelper.h
   config.max_token_generation_retry = 5;
   // initialize firebase with config and authentification
   Firebase.begin(&config, &auth);
+  Firebase.RTDB.setMaxRetry(&fbdo, 5);
   Serial.println("Getting user UID");
   while ((auth.token.uid) == "") {
     // Serial.print("here");
@@ -157,6 +165,9 @@ void setup() {
   Firebase_init();             // initialize Firebase
 
   //configTime(0,0, ntpServer); // configure time
+  esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
+  esp_task_wdt_add(NULL); //add current thread to WDT watch
+
   ///////////////setting RTC///////////////////////////
   Serial.println("Setting RTC timer to NTP: ");
   int retries = 0;
@@ -198,6 +209,8 @@ void loop() {
     Serial.print("time: ");
     Serial.println(timestamps[bufferIndex]);
     Serial.printf("Litter per hour: %d\n", literperhour);
+    Serial.printf("Buffer index: %d\n", bufferIndex);
+    
 
     // Store the data in the buffer
     buffer[bufferIndex] = literperhour;
@@ -219,20 +232,25 @@ void loop() {
       initWiFi();
       delay(1000);
       if(Firebase.ready()){
-        int retries = 0;
-        while (retries < 5) {
-          if (!Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr)) {
-            Serial.println(fbdo.errorReason().c_str());
-            retries++;
-            delay(1000);  // Delay before retrying
-          } else {
-            Serial.println("sent data sucessfully");
-            break;  // If successful, break the loop
-          }
-        }
+        // int retries = 0;
+        // while (retries < 5) {
+        //   bool sentDataSuccess = Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr);
+        //   delay(500);
+        //   if (sentDataSuccess||fbdo.errorReason().c_str()==" ") {
+        //     Serial.println("sent data sucessfully");
+        //     break;  // If successful, break the loop
+        //   } else {
+        //     Serial.println("sending data to Firebase failed");
+        //     Serial.println(fbdo.errorReason().c_str());
+        //     retries++;
+        //     delay(1000);  // Delay before retrying
+        //   }
+        // }
+        Serial.printf("Set json... %s\n", Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr) ? "~.~ sent data successfully ~.~" : fbdo.errorReason().c_str());
       }
       // Reset the buffer index
       bufferIndex = 0;
+      
       Serial.println("Turning WiFi off...");
       WiFi.mode(WIFI_OFF);
     }
@@ -261,17 +279,21 @@ void loop() {
           initWiFi();
           delay(1000);
           if(Firebase.ready()){
-            int retries = 0;
-            while (retries < 5) {
-              if (!Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr)) {
-                Serial.println(fbdo.errorReason().c_str());
-                retries++;
-                delay(1000);  // Delay before retrying
-              } else {
-                Serial.println("sent data sucessfully");
-                break;  // If successful, break the loop
-              }
-            }
+            // int retries = 0;
+            //  while (retries < 5) {
+            //   bool sentDataSuccess = Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr);
+            //   delay(500);
+            //   if (sentDataSuccess) {
+            //     Serial.println("sent data sucessfully");
+            //     break;  // If successful, break the loop
+            //   } else {
+            //     Serial.println("sending data to Firebase failed");
+            //     Serial.println(fbdo.errorReason().c_str());
+            //     retries++;
+            //     delay(1000);  // Delay before retrying
+            //   }
+            // }
+            Serial.printf("Set json... %s\n", Firebase.RTDB.setArray(&fbdo, parentPath.c_str(), &jsonArr) ? "~.~ sent data successfully ~.~" : fbdo.errorReason().c_str());
           }
         }
         
@@ -286,8 +308,9 @@ void loop() {
     } else {
       sleepCount = 0;
     }
+    esp_task_wdt_reset();
   }
-  delay(500);
+  delay(100);
   
 
     
