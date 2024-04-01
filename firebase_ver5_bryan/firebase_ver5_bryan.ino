@@ -12,11 +12,11 @@
 #include <esp_task_wdt.h>
 
 
-#define WIFI_SSID "Happy Illini"                                              // change
-#define WIFI_PASSWORD "00000007"                                         //change
+#define WIFI_SSID "304"                                              // change
+#define WIFI_PASSWORD "AndSebAlxCly2@234"                                         //change
 #define DATABASE_URL "https://hydrobryan-608df-default-rtdb.firebaseio.com/"                                          //change
 #define API_KEY "AIzaSyBAHEZcJ8F1WiusYmaw_8rZD2exXFwVW2I"                                              // change
-#define USER_EMAIL "okokok@gmail.com"                                            // change
+#define USER_EMAIL "mvp1@gmail.com"                                            // change
 #define USER_PASSWORD "00000007"                                         //change
 #define WDT_TIMEOUT 30
 #define STORAGE_BUCKET_ID "hydrobryan-608df.appspot.com"
@@ -32,6 +32,7 @@ String databasePath;  // database main path
                     // update later with user UID
 String timePath = "/timestamp";
 String litPerMinPath = "/litPerMin";  // child node
+String batteryVoltPath = "/batteryVolt";  // child node
 String parentPath; // parent node that is updated in every loop with timestamp
 /*
 *                               |-child-|
@@ -274,7 +275,7 @@ void loop() {
   if ((millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
     timestamp[bufferIndex] = rtc.getLocalEpoch();
-    timestamps[bufferIndex] = getFormattedTime();
+    timestamps[bufferIndex] = rtc.getLocalEpoch();
 
     Serial.print("time: ");
     Serial.println(timestamps[bufferIndex]);
@@ -336,8 +337,11 @@ void loop() {
         parentPath = databasePath + "/" + String(timestamp[i]);
         json.set(litPerMinPath.c_str(), buffer[i]);
         json.set(timePath.c_str(), timestamps[i]);
-        jsonArr.add(json);
         
+          if (i == bufferIndex-idle_time-1){
+            json.set(batteryVoltPath.c_str(), 2*analogRead(A0)*(3.3/4095));
+          }
+        jsonArr.add(json);
         }
         if (bufferIndex-idle_time>0){
           // initWiFi();
