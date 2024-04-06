@@ -12,8 +12,8 @@
 #include <esp_task_wdt.h>
 
 
-#define WIFI_SSID "304"                                              // change
-#define WIFI_PASSWORD "AndSebAlxCly2@234"                                         //change
+#define WIFI_SSID "IllinoisNet_Guest"                                              // change
+#define WIFI_PASSWORD ""                                         //change
 #define DATABASE_URL "https://hydrobryan-608df-default-rtdb.firebaseio.com/"                                          //change
 #define API_KEY "AIzaSyBAHEZcJ8F1WiusYmaw_8rZD2exXFwVW2I"                                              // change
 #define USER_EMAIL "mvp1@gmail.com"                                            // change
@@ -91,7 +91,9 @@ void Firebase_init() {
   Serial.print("User UID:");
   Serial.println(uid);
   // update database path
-  databasePath = "/UsersData/" + uid + "/readings";
+  //Dorm/Floor/
+  //databasePath = "/UsersData/" + uid + "/readings";
+  databasePath = "Dorms/ISR/1stFloor/"+ uid ;
 }
 //initialize the water flow sensor
 void FL408_init() {
