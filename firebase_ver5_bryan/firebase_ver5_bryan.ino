@@ -14,12 +14,12 @@
 
 #define WIFI_SSID "IllinoisNet_Guest"                                              // change
 #define WIFI_PASSWORD ""                                         //change
-#define DATABASE_URL "https://hydrobryan-608df-default-rtdb.firebaseio.com/"                                          //change
-#define API_KEY "AIzaSyBAHEZcJ8F1WiusYmaw_8rZD2exXFwVW2I"                                              // change
-#define USER_EMAIL "mvp1@gmail.com"                                            // change
-#define USER_PASSWORD "00000007"                                         //change
+#define DATABASE_URL "https://hydroisrtest-default-rtdb.firebaseio.com/"                                          //change
+#define API_KEY "AIzaSyD8cxJEJ1vKprH9IbM9MpVi4eG3PqCWseI"                                              // change
+#define USER_EMAIL "isr1@gmail.com"                                            // change
+#define USER_PASSWORD "Hydrologic"                                         //change
 #define WDT_TIMEOUT 30
-#define STORAGE_BUCKET_ID "hydrobryan-608df.appspot.com"
+#define STORAGE_BUCKET_ID "hydroisrtest.appspot.com"
 #define CURR_VERSION_NUM 1
 
 int avaliable_version_num = 0;
